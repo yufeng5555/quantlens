@@ -1,0 +1,10 @@
+{
+  "document": "financial-semantics-v2-identity",
+  "semantics_version": "financial-semantics-v2",
+  "adjudicated_law": "Cash law per the frozen Gate D producer: cash_after = cash_before - executed_notional - commission, exactly zero after a full-notional buy, at the adjudicated 1e-8 absolute and 1e-12 relative tolerances. Execution pricing is adverse effective fill per the sealed execution cost model; ledger-v1 executions carry closed roles and purposes and are independently replayed by financial-semantic-validator-v1.",
+  "defined_by": {
+    "packages/strategy-schema/schema/financial-contract-v1.json": "sha256:0c5ea271a36a86e88341dd6df164b6900d5437f795a6f547e1b083895c8b665e",
+    "packages/strategy-schema/schema/valuation-ledger-index-v1.json": "sha256:d864e29efd532c2f65e343ca6d25bb45fd39d02819fd36375814b2815467c16a",
+    "packages/strategy-schema/schema/valuation-execution-v1.json": "sha256:ef8078129c9ed71ddd4ae1943361fc48b3d79f1eb3d80bfec33f5eef27689128"
+  }
+}

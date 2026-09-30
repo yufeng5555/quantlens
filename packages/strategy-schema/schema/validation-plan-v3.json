@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/validation-plan-v3.json",
+  "title": "QuantLens dormant server-owned validation plan v3",
+  "description": "Gate E Stop B1 data contract. Closed schema for the immutable, server-owned validation-plan-v3 built before any plan anchor is issued or any final-holdout lease exists. It preserves the reviewed Battery v2 statistical law (expanding fixed-rule walk-forward, locked rule, preregistered regimes, half-even final-holdout rounding) and adds the mandatory continuous-path marker, the exact market-observation dtype/canonicalization policy, plan-anchor and final-access protocol identities, authority/public-key identifiers (never secrets), direct temporal-integrity and final-audit hash requirements and an explicit fail-closed production capability state. The final window uses the reviewed end-exclusive index convention and the exact field names of validation-plan-anchor-v1; the effective final_holdout_fraction equals final_window.bars / final_window.n_bars exactly. validation_plan_hash is the sha256:-prefixed canonical-JSON hash of every other plan field. No runner, queue, registry, API or product surface consumes this schema yet.",
+  "type": "object",
+  "required": [
+    "plan_version", "profile_id", "battery_version", "profile_hash",
+    "release_id", "required_worker_contract", "tenant_id", "workspace_id",
+    "run_id", "dsl_schema_version", "confirmed_spec_hash", "locked_rule_sha256",
+    "base_costs_sha256", "market_observations_version",
+    "canonicalization_policy_version", "snapshot_sha256", "exchange_calendar_id",
+    "exchange_calendar_version", "n_bars", "continuous_path_version",
+    "plan_anchor_version", "final_access_protocol",
+    "registered_final_holdout_fraction", "final_holdout_fraction",
+    "final_window", "development_bars", "max_indicator_lookback",
+    "minimum_train_bars", "final_warmup_bars", "walk_forward", "regime_law",
+    "authorities", "production_capabilities", "integrity_bindings",
+    "validation_plan_hash"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "plan_version": { "const": "validation-plan-v3" },
+    "profile_id": { "const": "battery-v3" },
+    "battery_version": { "const": "battery-v3" },
+    "profile_hash": { "$ref": "#/$defs/prefixed_sha256" },
+    "release_id": { "const": "quantlens-financial-v3" },
+    "required_worker_contract": { "const": "quantlens-worker-v3" },
+    "tenant_id": { "$ref": "#/$defs/identity" },
+    "workspace_id": { "$ref": "#/$defs/identity" },
+    "run_id": { "$ref": "#/$defs/identity" },
+    "dsl_schema_version": { "const": "1.2" },
+    "confirmed_spec_hash": { "$ref": "#/$defs/prefixed_sha256" },
+    "locked_rule_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "base_costs_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "market_observations_version": { "const": "market-observations-v2" },
+    "canonicalization_policy_version": { "const": "market-observation-canonicalization-v2" },
+    "snapshot_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "exchange_calendar_id": { "$ref": "#/$defs/identity" },
+    "exchange_calendar_version": { "$ref": "#/$defs/identity" },
+    "n_bars": { "type": "integer", "minimum": 1 },
+    "continuous_path_version": { "const": "continuous-development-path-v1" },
+    "plan_anchor_version": { "const": "validation-plan-anchor-v1" },
+    "final_access_protocol": { "const": "final-holdout-access-v1" },
+    "registered_final_holdout_fraction": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "final_holdout_fraction": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "final_window": {
+      "type": "object",
+      "required": [
+        "n_bars", "start_index", "end_index", "bars",
+        "warmup_start_index", "warmup_bars"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "n_bars": { "type": "integer", "minimum": 1 },
+        "start_index": { "type": "integer", "minimum": 1 },
+        "end_index": { "type": "integer", "minimum": 2 },
+        "bars": { "type": "integer", "minimum": 1 },
+        "warmup_start_index": { "type": "integer", "minimum": 0 },
+        "warmup_bars": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "development_bars": { "type": "integer", "minimum": 1 },
+    "max_indicator_lookback": { "type": "integer", "minimum": 2, "maximum": 400 },
+    "minimum_train_bars": { "type": "integer", "minimum": 504 },
+    "final_warmup_bars": { "type": "integer", "minimum": 200 },
+    "walk_forward": {
+      "type": "object",
+      "required": [
+        "mode", "parameter_selection", "minimum_train_floor_bars",
+        "minimum_train_lookback_multiple", "test_window_bars",
+        "minimum_short_fold_bars"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "const": "expanding-fixed-rule" },
+        "parameter_selection": { "const": "forbidden" },
+        "minimum_train_floor_bars": { "const": 504 },
+        "minimum_train_lookback_multiple": { "const": 2 },
+        "test_window_bars": { "const": 126 },
+        "minimum_short_fold_bars": { "const": 63 }
+      }
+    },
+    "regime_law": {
+      "type": "object",
+      "required": ["trend", "volatility", "states", "minimum_observations"],
+      "additionalProperties": false,
+      "properties": {
+        "trend": { "const": "benchmark_close[t-1] >= SMA200[t-1]" },
+        "volatility": { "const": "annualized_realized_vol_63[t-1] >= 0.20" },
+        "states": { "const": ["up_low", "up_high", "down_low", "down_high"] },
+        "minimum_observations": { "const": 20 }
+      }
+    },
+    "authorities": {
+      "type": "object",
+      "required": [
+        "anchor_authority_id", "anchor_issuer_key_id",
+        "holdout_authority_id", "holdout_authority_key_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "anchor_authority_id": { "$ref": "#/$defs/identity" },
+        "anchor_issuer_key_id": { "$ref": "#/$defs/identity" },
+        "holdout_authority_id": { "$ref": "#/$defs/identity" },
+        "holdout_authority_key_id": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "production_capabilities": {
+      "type": "object",
+      "required": [
+        "external_anchor_ready", "external_holdout_ready", "unconfigured_behavior"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "external_anchor_ready": { "const": true },
+        "external_holdout_ready": { "const": true },
+        "unconfigured_behavior": { "const": "fail_closed" }
+      }
+    },
+    "integrity_bindings": {
+      "type": "object",
+      "required": ["temporal_integrity", "final_holdout_execution_audit"],
+      "additionalProperties": false,
+      "properties": {
+        "temporal_integrity": { "const": "direct_payload_sha256_required" },
+        "final_holdout_execution_audit": { "const": "direct_payload_sha256_required" }
+      }
+    },
+    "validation_plan_hash": { "$ref": "#/$defs/prefixed_sha256" }
+  },
+  "$defs": {
+    "prefixed_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    }
+  }
+}

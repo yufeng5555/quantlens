@@ -1,0 +1,1 @@
+{"kind":"sensitivity","payload":{"basis":"locked_rule_only","grid":[],"locked_rule_sha256":"sha256:169949776e2e14f4e0cde2b99f324684430ecc5e6f9c4474c5b91b453b13cf04","note":"Validation Battery v2 performs no parameter search or selection.","parameter_selection":"forbidden","status":"NOT_RUN"},"producer":"quantlens-engine/0.1.0+battery-v2"}

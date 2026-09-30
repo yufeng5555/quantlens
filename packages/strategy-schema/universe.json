@@ -1,0 +1,15 @@
+{
+  "universe_version": 1,
+  "label": "Curated liquid-US-ETF universe v1 (fixed). Changes to this list are versioned artifacts (02 §5).",
+  "criteria_note": "Illustrative high-AUM/high-ADV US-listed ETFs. Gate 2 uses synthetic price series keyed to these symbols; no real market data.",
+  "symbols": [
+    { "symbol": "SPY", "name": "SPDR S&P 500 ETF Trust" },
+    { "symbol": "QQQ", "name": "Invesco QQQ Trust" },
+    { "symbol": "DIA", "name": "SPDR Dow Jones Industrial Average ETF" },
+    { "symbol": "IWM", "name": "iShares Russell 2000 ETF" },
+    { "symbol": "EFA", "name": "iShares MSCI EAFE ETF" },
+    { "symbol": "XLK", "name": "Technology Select Sector SPDR Fund" },
+    { "symbol": "GLD", "name": "SPDR Gold Shares" },
+    { "symbol": "TLT", "name": "iShares 20+ Year Treasury Bond ETF" }
+  ]
+}

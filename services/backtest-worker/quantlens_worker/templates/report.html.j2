@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strategy Evidence Report — {{ spec.meta.name }}</title>
+<style>
+  /* QuantLens design tokens — matched to the product app (globals.css). */
+  :root {
+    --ink: #101c26; --soft: #47586a; --faint: #5a6d7e; --line: #dde3e9;
+    --line-soft: #e8edf1; --surface-soft: #eef1f4; --accent: #0a5c74;
+    --navy: #0c2334; --warn-bg: #fdf6e7; --warn-line: #dfc088; --warn-ink: #6b4e0a;
+    --bad: #a4262c; --bad-bg: #fbefef; --good: #1d6f42; --good-bg: #e9f3ee;
+    --neutral: #5b6570; --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--ink); background: #fff;
+         font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         text-rendering: optimizeLegibility; }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+  h1 { font-size: 1.7rem; line-height: 1.2; letter-spacing: -0.02em; margin: 0.35em 0 0.15em; }
+  h2 { font-size: 1.14rem; letter-spacing: -0.01em; margin: 2em 0 0.5em;
+       padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 0.98rem; margin: 1.1em 0 0.35em; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.86rem; margin: 8px 0;
+          font-variant-numeric: tabular-nums; }
+  th, td { border: 1px solid var(--line-soft); padding: 6px 10px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: var(--surface-soft); font-weight: 650; }
+  tbody th { background: #f8fafc; font-weight: 600; }
+  caption { text-align: left; font-size: 0.78rem; color: var(--soft); padding-bottom: 4px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.84em; word-break: break-all; }
+  .banner { background: var(--warn-bg); border: 1px solid var(--warn-line);
+            border-left: 4px solid var(--warn-line); color: var(--warn-ink);
+            border-radius: var(--radius); padding: 12px 16px; font-weight: 550;
+            font-size: 0.9rem; margin: 16px 0; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+               gap: 6px 14px; margin-top: 10px; padding: 12px 14px;
+               border: 1px solid var(--line-soft); border-radius: var(--radius);
+               background: #fbfcfd; font-size: 0.78rem; color: var(--faint); }
+  .status-pass { color: var(--good); font-weight: 700; }
+  .status-fail { color: var(--bad); font-weight: 700; }
+  .status-inconclusive { color: var(--warn-ink); font-weight: 700; }
+  .status-not-run { color: var(--neutral); font-weight: 700; }
+  .status-badge { display: inline-block; border: 1.5px solid currentColor; border-radius: 999px;
+                  padding: 2px 10px; font-size: 0.8rem; letter-spacing: 0.02em; }
+  .status-summary { background: #f8fafc; border-color: var(--line);
+                    border-left: 4px solid var(--accent); color: var(--ink); font-weight: 400; }
+  .status-key { margin: 8px 0; padding-left: 20px; font-size: 0.82rem; color: var(--soft); }
+  .fals { border: 1.5px solid var(--line); border-left-width: 5px; border-radius: var(--radius);
+          padding: 6px 18px 14px; background: #fff; }
+  .status-panel-pass { border-left-color: var(--good); }
+  .status-panel-fail { border-left-color: var(--bad); }
+  .status-panel-inconclusive { border-left-color: var(--warn-line); }
+  .status-panel-not-run { border-left-color: var(--neutral); }
+  .disclosure { border-top: 1px solid var(--line); padding: 16px 2px 0;
+                font-size: 0.8rem; color: var(--soft); margin-top: 32px; }
+  details { margin: 8px 0; border: 1px solid var(--line-soft); border-radius: var(--radius);
+            padding: 0 12px; background: #fff; }
+  details[open] { padding-bottom: 10px; }
+  summary { cursor: pointer; color: var(--accent); font-weight: 650; padding: 10px 2px; }
+  ul.checklist li { margin: 4px 0; }
+  .tablewrap { overflow-x: auto; }
+  .tablewrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .oosnote { background: #eef4f6; border-left: 4px solid var(--accent);
+             border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 0.9rem; }
+  .masthead { display: flex; align-items: baseline; justify-content: space-between;
+              gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+  .masthead .brand { font-weight: 750; letter-spacing: -0.01em; color: var(--navy); }
+  .kicker { font-size: 0.72rem; color: var(--faint); letter-spacing: 0.08em;
+            text-transform: uppercase; font-weight: 650; }
+  @media print {
+    .fals, .tablewrap, .banner { break-inside: avoid; }
+    main { padding: 0; max-width: none; }
+    a { color: inherit; text-decoration: none; }
+    details { border: 0; padding: 0; }
+    h2 { break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+  {% if research_mode == 'sandbox' %}
+  <div class="banner"><strong>Sandbox test evidence — non-formal.</strong>
+    This run used the separate development allowance. It is not formal research
+    evidence and did not access the Strict-validation final holdout.</div>
+  {% endif %}
+  {% if artifact_contract and not artifact_contract.verified_financial_semantics %}
+  <div class="banner"><strong>Original historical evidence contract.</strong>
+    This report is reproduced under <code>{{ artifact_contract.ledger_semantics_version }}</code>
+    and <code>{{ artifact_contract.execution_semantics_version }}</code>. The configured
+    <code>slippage_bps</code> value is legacy linear execution friction, not an adverse
+    effective fill price. These results are displayable but are not eligible for
+    metrics-v2, contract-gated comparison, ranking, or Research Copilot claims.</div>
+  {% endif %}
+  {% macro pct_or_unavailable(value) -%}
+    {%- if value is defined and value is not none -%}{{ value | pct }}{%- else -%}<span class="status-inconclusive">Not available</span>{%- endif -%}
+  {%- endmacro %}
+  {% macro num_or_unavailable(value) -%}
+    {%- if value is defined and value is not none -%}{{ value | num }}{%- else -%}<span class="status-inconclusive">Not available</span>{%- endif -%}
+  {%- endmacro %}
+  {% macro money_or_unavailable(value) -%}
+    {%- if value is defined and value is not none -%}{{ value | money }}{%- else -%}<span class="status-inconclusive">Not available</span>{%- endif -%}
+  {%- endmacro %}
+  {% macro value_or_unavailable(value) -%}
+    {%- if value is defined and value is not none -%}{{ value }}{%- else -%}<span class="status-inconclusive">Not available</span>{%- endif -%}
+  {%- endmacro %}
+
+  {% set checks_run = falsification.checks_run | default([], true) %}
+  {% set findings = falsification.findings | default([], true) %}
+  {% set data_label = identity.data_label | default(manifest.data_label, true) | default(snapshot.label, true) | default('SYNTHETIC', true) | upper %}
+  {% set is_user_uploaded = data_label == 'USER_UPLOADED' %}
+  {% set is_licensed = data_label == 'LICENSED_PROVIDER' %}
+  {% set is_dataset_backed = is_user_uploaded or is_licensed %}
+  {% set provenance = data_provenance | default({}, true) %}
+  {% set dataset_manifest = snapshot.dataset_manifest | default({}, true) %}
+  {% set snapshot_generator = snapshot.generator | default({}, true) %}
+  {% set dataset_id = manifest.dataset_id | default(dataset_manifest.dataset_id, true) | default(snapshot_generator.dataset_id, true) | default('Not available', true) %}
+  {% set dataset_manifest_hash = manifest.dataset_manifest_sha256 | default(snapshot.dataset_manifest_sha256, true) | default(snapshot_generator.dataset_manifest_sha256, true) | default('Not available', true) %}
+  {% set snapshot_coverage = snapshot.coverage[spec.universe.symbol] | default({}, true) %}
+  {% set source_coverage = provenance.coverage | default(dataset_manifest.coverage, true) | default(snapshot_coverage, true) | default({}, true) %}
+  {% set source_row_count = provenance.row_count | default(dataset_manifest.row_count, true) %}
+  {% set adjustment_convention = provenance.adjustment_mode | default(provenance.price_adjustment, true) | default(snapshot.adjustment_convention, true) | default(dataset_manifest.price_adjustment, true) | default('Not available', true) %}
+  {# The basis follows the data here exactly as it does in the v2 report. Only the
+     bundle seeder writes the operator-attested value, and absent provenance resolves
+     to Undefined, so a run on the synthetic fixture keeps the price-return wording it
+     has always had. Naming price return over a dividend-adjusted series tells a reader
+     their real return was higher than shown, when those dividends are already inside
+     every figure below. #}
+  {% set is_total_return = (provenance.price_adjustment | default(dataset_manifest.price_adjustment, true)) == 'operator_attested_total_return_ohlc' %}
+  {% set basis_term = 'total return' if is_total_return else 'price return' %}
+  {% set Basis_term = 'Total return' if is_total_return else 'Price return' %}
+  {% set report_complete = evidence_complete | default(false) %}
+  {% if falsification.completeness is defined and falsification.completeness.evidence_complete is defined %}
+    {% set report_complete = falsification.completeness.evidence_complete %}
+  {% endif %}
+  {% set raw_battery_status = battery_status | default(falsification.status, true) | default('INCONCLUSIVE', true) | upper %}
+  {% set battery_label = 'INCONCLUSIVE' %}
+  {% set battery_css = 'inconclusive' %}
+  {% set battery_icon = '?' %}
+  {% if not checks_run or not findings %}
+    {% set battery_label = 'NOT RUN' %}
+    {% set battery_css = 'not-run' %}
+    {% set battery_icon = '—' %}
+  {% elif raw_battery_status in ['FAIL', 'FAILED', 'FAILING'] %}
+    {% set battery_label = 'FAIL' %}
+    {% set battery_css = 'fail' %}
+    {% set battery_icon = '✗' %}
+  {% elif raw_battery_status in ['PASS', 'PASSED', 'PASSING'] and report_complete %}
+    {% set battery_label = 'PASS' %}
+    {% set battery_css = 'pass' %}
+    {% set battery_icon = '✓' %}
+  {% endif %}
+
+  <div class="masthead">
+    <span class="brand">QuantLens</span>
+    <span class="kicker">Strategy Evidence Report</span>
+  </div>
+  <h1>{{ spec.meta.name }}</h1>
+  <aside class="banner" aria-labelledby="data-source-warning-title">
+    {% if is_user_uploaded %}
+    <strong id="data-source-warning-title">USER-PROVIDED DATA.</strong>
+    User-provided and integrity-checked; source accuracy was not independently authenticated. QuantLens checked the
+    normalized dataset structure and sealed hashes, but did not verify the values against
+    an independent market-data source.
+    {% elif is_licensed %}
+    <strong id="data-source-warning-title">LICENSED PROVIDER DATA.</strong>
+    This report uses integrity-checked daily observations acquired under a versioned
+    commercial-use policy. Display rights, instrument scope, and retention were re-checked
+    immediately before rendering.
+    {% else %}
+    <strong id="data-source-warning-title">SYNTHETIC DATA.</strong> This report was computed
+    on the clearly labeled, generated sample series bundled with this build. Its
+    numbers are illustrative of the workflow only.
+    {% endif %}
+    This report is evidence about a rule you authored; it is not investment advice, not an
+    approval, and not a forecast.
+  </aside>
+  <section class="banner status-summary" aria-labelledby="battery-status-title">
+    <strong id="battery-status-title">Battery status:</strong>
+    <span class="status-badge status-{{ battery_css }}">{{ battery_icon }} {{ battery_label }}</span>.
+    {% if battery_label == 'PASS' %}
+    All required checks produced conclusive sealed evidence. This completeness label says
+    nothing about whether the strategy is good or profitable.
+    {% elif battery_label == 'FAIL' %}
+    At least one required check crossed its declared failure threshold. Other checks may
+    still be inconclusive; inspect each result below.
+    {% elif battery_label == 'NOT RUN' %}
+    <strong>No required checks were reported.</strong> This is not a pass and this report
+    cannot be described as evidence-complete.
+    {% else %}
+    <strong>Evidence is not complete.</strong> One or more required checks
+    could not produce conclusive evidence; this report must not be described as
+    evidence-complete or as having passed.
+    {% endif %}
+  </section>
+  <div class="meta-grid">
+    <span>Manifest: <code>{{ manifest.manifest_id }}</code></span>
+    <span>Spec hash: <code>{{ manifest.spec_hash[:24] }}…</code></span>
+    <span>Snapshot: <code>{{ manifest.snapshot_id }}</code> ({{ data_label }})</span>
+    {% if is_dataset_backed %}<span>Dataset: <code>{{ dataset_id }}</code></span>{% endif %}
+    <span>Engine: <code>v{{ manifest.engine_semver }}</code> · battery <code>{{ falsification.battery_version }}</code></span>
+    <span>Result hash: <code>{{ manifest.result_hash[:24] }}…</code></span>
+    <span>Created: <code>{{ manifest.created_at }}</code></span>
+  </div>
+
+  <h2>1 · What was tested</h2>
+  <p>{{ restatement }}</p>
+  <p style="font-size:0.86rem;color:var(--soft)">Every assumption below was visible and editable
+  before you confirmed; nothing ran until you confirmed the restatement above.</p>
+  <div class="tablewrap" role="region" aria-labelledby="spec-table-caption" tabindex="0">
+  <table>
+    <caption id="spec-table-caption">Confirmed strategy specification (DSL v{{ spec.dsl_version }})</caption>
+    <thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">Instrument</th><td>{{ spec.universe.symbol }} ({% if is_user_uploaded %}user-provided daily OHLC series{% elif is_licensed %}licensed-provider daily OHLC series{% else %}bundled synthetic daily series{% endif %})</td></tr>
+    <tr><th scope="row">Rule</th><td>{% if spec.rule.type == 'price_vs_ma' %}Long when close &gt; {{ spec.rule.ma_days }}-day SMA, else cash{% else %}Long when {{ spec.rule.fast_ma_days }}-day SMA &gt; {{ spec.rule.ma_days }}-day SMA, else cash{% endif %}</td></tr>
+    <tr><th scope="row">Execution</th><td>Daily bars · decide at close t · fill at open t+1</td></tr>
+    <tr><th scope="row">Costs per fill</th><td>{{ spec.costs.commission_bps }} bps commission + {{ spec.costs.slippage_bps }} bps slippage</td></tr>
+    <tr><th scope="row">Benchmark</th><td>Hold {{ spec.universe.symbol if spec.benchmark.symbol == 'same_as_universe' else spec.benchmark.symbol }} from first tradable decision, same entry costs</td></tr>
+    <tr><th scope="row">Window</th><td>{{ spec.data.range.start }} → {{ spec.data.range.end }}</td></tr>
+    <tr><th scope="row">IS/OOS split</th><td>Final {{ (spec.validation.is_oos_split.oos_fraction * 100) | round | int }}% of bars held out-of-sample; the primary estimate executed once. {{ value_or_unavailable(oos_execution_audit.cost_stress_execution_count) }} separate preregistered cost-stress counterfactual execution(s) are recorded ({{ value_or_unavailable(oos_execution_audit.count) }} total, with the base 1× result reused).</td></tr>
+    <tr><th scope="row">Sensitivity grid (IS only)</th><td>MA windows {{ spec.validation.sensitivity.grid.ma_days | join(', ') }}</td></tr>
+    <tr><th scope="row">Cost stress</th><td>{{ cost_stress.multipliers | join('× / ') }}× declared costs</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>2 · Methodology &amp; conventions</h2>
+  <ul>
+    <li>Deterministic pandas/numpy engine v{{ manifest.engine_semver }}; no AI service touches any number in this report (fixed template narrative only).</li>
+    <li>Signals use each bar's close; fills occur at the next bar's open. The bar that fires a signal is never the fill bar.</li>
+    <li>Long/flat, full notional, fractional shares; itemized commission and slippage on every fill's notional.</li>
+    <li>Benchmark fairness: buy-and-hold starts at the strategy's first tradable decision date — never earlier — and pays the same entry cost model.</li>
+    <li>Out-of-sample isolation: parameter sweeps read only the in-sample slice. The
+    primary OOS estimate executed once; preregistered cost-stress counterfactuals executed
+    separately and are individually recorded in the OOS audit. Indicator warm-up may read
+    earlier (past) bars only.</li>
+    {% if is_dataset_backed %}
+    <li>Data convention: {{ snapshot.calendar | default('Sealed daily sessions.', true) }} Adjustment: {{ adjustment_convention }}.</li>
+    {% else %}
+    <li>Synthetic calendar: business days Mon–Fri, no holiday calendar. Splits, if present in a fixture, are back-adjusted (pre-split prices divided by the ratio).</li>
+    {% endif %}
+    <li>Metrics annualize on 252 trading days; Sharpe uses rf = 0 and sample stdev
+    (ddof = 1). Uninvested cash earns 0% in the current engine.</li>
+    {% if is_total_return %}
+    <li><strong>Return basis:</strong> total return; dividends and distributions are reinvested in the underlying series. These results therefore approximate the full investor holding-period return before tax.</li>
+    {% else %}
+    <li><strong>Return basis:</strong> split-adjusted price return; dividends and distributions are excluded. These results do not represent the full investor holding-period return.</li>
+    {% endif %}
+  </ul>
+
+  <h2>3 · Data &amp; provenance</h2>
+  <div class="tablewrap" role="region" aria-labelledby="provenance-table-caption" tabindex="0">
+  <table>
+    <caption id="provenance-table-caption">{% if is_user_uploaded %}User-provided{% elif is_licensed %}Licensed-provider{% else %}Synthetic{% endif %} data source and integrity details</caption>
+    <thead><tr><th scope="col">Item</th><th scope="col">Value</th></tr></thead>
+    <tbody>
+    {% if is_user_uploaded %}
+    <tr><th scope="row">Source assurance</th><td><strong>User-provided and integrity-checked; source accuracy not independently authenticated.</strong></td></tr>
+    <tr><th scope="row">Dataset ID</th><td><code>{{ dataset_id }}</code></td></tr>
+    <tr><th scope="row">Dataset manifest SHA-256</th><td><code>{{ dataset_manifest_hash }}</code></td></tr>
+    {% elif is_licensed %}
+    <tr><th scope="row">Source assurance</th><td><strong>Licensed provider observations; rights re-checked for this display.</strong></td></tr>
+    <tr><th scope="row">Dataset ID</th><td><code>{{ dataset_id }}</code></td></tr>
+    <tr><th scope="row">Dataset manifest SHA-256</th><td><code>{{ dataset_manifest_hash }}</code></td></tr>
+    <tr><th scope="row">Provider feed</th><td>{{ provenance.provider_id }} · {{ provenance.feed }} · tier {{ provenance.tier }}</td></tr>
+    <tr><th scope="row">Instrument identity</th><td><code>{{ provenance.instrument_id }}</code> · MIC {{ provenance.mic }} · {{ provenance.currency }}</td></tr>
+    <tr><th scope="row">Retrieved / revision</th><td>{{ provenance.retrieved_at }} · {{ provenance.revision | default('No revision identifier', true) }}</td></tr>
+    <tr><th scope="row">Provider payload SHA-256</th><td><code>{{ provenance.provider_payload_sha256 }}</code></td></tr>
+    <tr><th scope="row">Normalized rows SHA-256</th><td><code>{{ provenance.normalized_rows_sha256 }}</code></td></tr>
+    <tr><th scope="row">Required attribution</th><td><strong>{{ provenance.required_attribution }}</strong></td></tr>
+    {% else %}
+    <tr><th scope="row">Provider</th><td>Bundled synthetic fixture generator ({{ snapshot_generator.version }}, seed {{ snapshot_generator.base_seed }}) — <strong>NOT market data</strong></td></tr>
+    {% endif %}
+    <tr><th scope="row">Snapshot ID</th><td><code>{{ snapshot.snapshot_id }}</code></td></tr>
+    <tr><th scope="row">Snapshot SHA-256</th><td><code>{{ snapshot.sha256 }}</code></td></tr>
+    <tr><th scope="row">Coverage</th><td>{{ value_or_unavailable(source_coverage.start) }} → {{ value_or_unavailable(source_coverage.end) }}{% if source_row_count is defined %} ({{ source_row_count }} normalized rows){% endif %}</td></tr>
+    <tr><th scope="row">Adjustment convention</th><td>{{ adjustment_convention }}</td></tr>
+    <tr><th scope="row">Coverage used</th><td>{{ segments.is.start }} → {{ segments.oos.end }} ({{ segments.is.bars + segments.oos.bars }} bars)</td></tr>
+    <tr><th scope="row">Missing bars</th><td>{{ gaps.missing_day_count }} (max consecutive {{ gaps.max_consecutive }}; policy: ≤ 3 skipped &amp; listed, else the run fails)</td></tr>
+    {% if gaps.gaps %}<tr><th scope="row">Gap list</th><td>{% for g in gaps.gaps %}{{ g.start }} ({{ g.days }}d){% if not loop.last %}, {% endif %}{% endfor %}</td></tr>{% endif %}
+    </tbody>
+  </table>
+  </div>
+
+  <h2>4 · Results — strictly separated</h2>
+  <h3>In-sample segment</h3>
+  {{ is_chart | safe }}
+  <h3>Out-of-sample segment</h3>
+  {{ oos_chart | safe }}
+  <p style="font-size:0.82rem;color:var(--soft)">In-sample and out-of-sample are
+  independent simulations with separate initial-capital bases. Their endpoints are
+  intentionally not connected.</p>
+  <p style="font-size:0.82rem;color:var(--soft)">Chart data appears in the tables below (screen-reader and print friendly).</p>
+
+  <h3>4a · In-sample ({{ segments.is.start }} → {{ segments.is.end }}, {{ segments.is.bars }} bars)</h3>
+  <p style="font-size:0.9rem">The window the rule was allowed to be tuned on. Treat it as the optimistic view.</p>
+  {% macro metric_rows(m, b) -%}
+    <tbody>
+    <tr><th scope="row">{{ Basis_term }}</th><td>{{ pct_or_unavailable(m.total_return) }}</td><td>{{ pct_or_unavailable(b.total_return) }}</td></tr>
+    <tr><th scope="row">CAGR</th><td>{{ pct_or_unavailable(m.cagr) }}</td><td>{{ pct_or_unavailable(b.cagr) }}</td></tr>
+    <tr><th scope="row">Annualized volatility</th><td>{{ pct_or_unavailable(m.ann_vol) }}</td><td>{{ pct_or_unavailable(b.ann_vol) }}</td></tr>
+    <tr><th scope="row">Sharpe (rf = 0)</th><td>{{ num_or_unavailable(m.sharpe) }}</td><td>{{ num_or_unavailable(b.sharpe) }}</td></tr>
+    <tr><th scope="row">Max drawdown</th><td>{{ pct_or_unavailable(m.max_drawdown) }}</td><td>{{ pct_or_unavailable(b.max_drawdown) }}</td></tr>
+    <tr><th scope="row">Trades (fills)</th><td>{{ value_or_unavailable(m.n_trades) }}</td><td>{{ value_or_unavailable(b.n_trades) }}</td></tr>
+    <tr><th scope="row">Total costs paid</th><td>{{ money_or_unavailable(m.total_costs) }}</td><td>{{ money_or_unavailable(b.total_costs) }}</td></tr>
+    <tr><th scope="row">Time in market</th><td>{% if m.exposure is defined and m.exposure is not none %}{{ (m.exposure * 100) | round(1) }}%{% else %}<span class="status-inconclusive">Not available</span>{% endif %}</td><td>{% if b.exposure is defined and b.exposure is not none %}{{ (b.exposure * 100) | round(1) }}% after benchmark entry{% else %}<span class="status-inconclusive">Not available</span>{% endif %}</td></tr>
+    <tr><th scope="row">Initial capital (sealed)</th><td>{{ money_or_unavailable(m.initial_capital) }}</td><td>{{ money_or_unavailable(b.initial_capital) }}</td></tr>
+    <tr><th scope="row">Final equity</th><td>{{ money_or_unavailable(m.final_equity) }}</td><td>{{ money_or_unavailable(b.final_equity) }}</td></tr>
+    </tbody>
+  {%- endmacro %}
+  <p style="font-size:0.82rem;color:var(--soft)">The side-by-side table aligns both
+  series to the benchmark's first tradable decision. The strategy's full declared-window
+  metrics remain sealed separately in the artifact.</p>
+  <div class="tablewrap" role="region" aria-labelledby="is-metrics-caption" tabindex="0">
+    <table>
+      <caption id="is-metrics-caption">In-sample strategy and benchmark metrics</caption>
+      <thead><tr><th scope="col">Metric</th><th scope="col">Strategy</th><th scope="col">Benchmark (hold from first decision)</th></tr></thead>
+      {{ metric_rows(is_result.comparison_strategy_metrics, is_result.benchmark_metrics) }}
+    </table>
+  </div>
+
+  <h3>4b · Out-of-sample ({{ segments.oos.start }} → {{ segments.oos.end }}, {{ segments.oos.bars }} bars) — the honest estimate</h3>
+  <div class="oosnote">This window was held out of all tuning. The primary estimate
+  executed exactly once for this spec version; {{ value_or_unavailable(oos_execution_audit.cost_stress_execution_count) }}
+  separate cost-stress counterfactual execution(s) are sealed in the audit. It is the closest thing this report
+  has to an unbiased read, and it is still only historical evidence on
+  {% if is_user_uploaded %}user-provided data whose source accuracy was not independently authenticated{% elif is_licensed %}licensed historical provider data{% else %}synthetic data{% endif %} —
+  not a forecast.</div>
+  <div class="tablewrap" role="region" aria-labelledby="oos-metrics-caption" tabindex="0">
+    <table>
+      <caption id="oos-metrics-caption">Out-of-sample strategy and benchmark metrics</caption>
+      <thead><tr><th scope="col">Metric</th><th scope="col">Strategy</th><th scope="col">Benchmark (hold from first decision)</th></tr></thead>
+      {{ metric_rows(oos_result.comparison_strategy_metrics, oos_result.benchmark_metrics) }}
+    </table>
+  </div>
+  <p style="font-size:0.85rem;color:var(--soft)">No blended in-sample + out-of-sample headline is shown anywhere in this report, by design.</p>
+
+  <h2>5 · Transaction-cost stress</h2>
+  <p style="font-size:0.9rem">Declared costs ({{ cost_stress.base_costs_bps.commission_bps }} + {{ cost_stress.base_costs_bps.slippage_bps }} bps) scaled by each multiplier; both segments shown separately.</p>
+  <div class="tablewrap" role="region" aria-labelledby="cost-stress-caption" tabindex="0">
+  <table>
+    <caption id="cost-stress-caption">Transaction-cost stress results by multiplier</caption>
+    <thead><tr><th scope="col">Multiplier</th><th scope="col">IS {{ basis_term }}</th><th scope="col">IS Sharpe</th><th scope="col">IS costs paid</th><th scope="col">OOS {{ basis_term }}</th><th scope="col">OOS Sharpe</th><th scope="col">OOS costs paid</th></tr></thead>
+    <tbody>
+    {% for row in cost_stress.rows | default([], true) %}
+    <tr>
+      <th scope="row">{{ row.multiplier }}×</th>
+      <td>{{ pct_or_unavailable(row.is.total_return) }}</td><td>{{ num_or_unavailable(row.is.sharpe) }}</td><td>{{ money_or_unavailable(row.is.total_costs) }}</td>
+      <td>{{ pct_or_unavailable(row.oos.total_return) }}</td><td>{{ num_or_unavailable(row.oos.sharpe) }}</td><td>{{ money_or_unavailable(row.oos.total_costs) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" style="text-align:left"><strong class="status-not-run">NOT RUN.</strong> No cost-stress results were reported. Missing stress evidence is not a pass.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <h2>6 · Parameter sensitivity (in-sample only)</h2>
+  <p style="font-size:0.9rem">Every declared grid cell is shown — never only the best one.
+  The sweep read the in-sample slice exclusively.</p>
+  <div class="tablewrap" role="region" aria-labelledby="sensitivity-caption" tabindex="0">
+  <table>
+    <caption id="sensitivity-caption">In-sample parameter-sensitivity grid</caption>
+    <thead><tr><th scope="col">MA window</th><th scope="col">IS Sharpe</th><th scope="col">IS {{ basis_term }}</th><th scope="col">IS max drawdown</th><th scope="col">Fills</th><th scope="col">Selection</th></tr></thead>
+    <tbody>
+    {% for cell in sensitivity.grid | default([], true) %}
+    <tr>
+      <th scope="row">{{ cell.ma_days }} days</th>
+      {% if cell.skipped %}<td colspan="4" style="text-align:left;color:var(--soft)">Skipped — {{ cell.skipped }}</td><td>—</td>
+      {% else %}
+      <td>{{ num_or_unavailable(cell.sharpe) }}</td><td>{{ pct_or_unavailable(cell.total_return) }}</td><td>{{ pct_or_unavailable(cell.max_drawdown) }}</td><td>{{ value_or_unavailable(cell.n_trades) }}</td>
+      <td>{% if cell.ma_days == sensitivity.chosen_ma_days %}◀ Chosen{% else %}—{% endif %}</td>
+      {% endif %}
+    </tr>
+    {% else %}
+    <tr><td colspan="6" style="text-align:left"><strong class="status-not-run">NOT RUN.</strong> No parameter-sensitivity cells were reported. This absence is not evidence of robustness.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% set sensitivity_neighbors = sensitivity.neighbors | default([], true) %}
+  {% if sensitivity.chosen_percentile_in_grid is defined and sensitivity.chosen_percentile_in_grid is not none %}
+  <p>The chosen window ({{ sensitivity.chosen_ma_days }} days) sits at the
+  <strong>{{ sensitivity.chosen_percentile_in_grid }}th percentile</strong> of the declared
+  grid by in-sample Sharpe.</p>
+  {% else %}
+  <p><strong class="status-inconclusive">Chosen-cell percentile not available.</strong>
+  A missing percentile is not evidence that the selected parameter is robust.</p>
+  {% endif %}
+  {% if sensitivity_neighbors %}
+  <p>Adjacent cells used for the neighbor check:
+  {% for nb in sensitivity_neighbors %}{{ nb.ma_days }}d → Sharpe {{ num_or_unavailable(nb.sharpe) }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+  {% else %}
+  <p><strong class="status-inconclusive">INCONCLUSIVE — no valid adjacent parameter evidence was reported.</strong>
+  The missing neighbor comparison must not be described as a pass.</p>
+  {% endif %}
+
+  <h2>7 · Falsification — the strongest evidence against this idea</h2>
+  <div class="fals status-panel-{{ battery_css }}">
+    <p><strong>Overall falsification status:</strong>
+      <span class="status-badge status-{{ battery_css }}">{{ battery_icon }} {{ battery_label }}</span>
+    </p>
+    <ul class="status-key" aria-label="Status definitions">
+      <li><strong class="status-pass">PASS</strong> — the check ran with its required evidence and did not cross the declared failure threshold.</li>
+      <li><strong class="status-fail">FAIL</strong> — the check ran and crossed the declared failure threshold.</li>
+      <li><strong class="status-inconclusive">INCONCLUSIVE</strong> — the check was reported, but required evidence was unavailable or insufficient.</li>
+      <li><strong class="status-not-run">NOT RUN</strong> — a required check was not reported at all.</li>
+    </ul>
+    <p style="font-size:0.85rem;color:var(--soft)">This section cannot be removed from a
+    Strategy Evidence Report. Checks reported:
+    {% if checks_run %}{{ checks_run | join(', ') }}{% else %}<strong class="status-not-run">none — NOT RUN</strong>{% endif %}.
+    Thresholds are declared in the battery configuration
+    (<code>{{ manifest.battery_config_hash[:24] }}…</code>).</p>
+    {% set required_checks = falsification.required_checks | default(['oos_decay', 'cost_fragility', 'parameter_fragility'], true) %}
+    {% for required_check in required_checks %}
+      {% if required_check not in checks_run %}
+      <p><span class="status-badge status-not-run">— {{ required_check | replace('_', ' ') }} — NOT RUN</span>
+      Required check was not reported. Its missing result must not be treated as a pass.</p>
+      {% endif %}
+    {% endfor %}
+
+    {% for f in findings %}
+    {% set finding_id = f.id | default('unreported_check', true) %}
+    {% set evidence = f.evidence | default({}, true) %}
+    {% set raw_status = f.status_label | default(f.status, true) | default('INCONCLUSIVE', true) | upper %}
+    {% set finding_label = 'INCONCLUSIVE' %}
+    {% set finding_css = 'inconclusive' %}
+    {% set finding_icon = '?' %}
+    {% if raw_status in ['PASS', 'PASSED', 'PASSING'] %}
+      {% set finding_label = 'PASS' %}
+      {% set finding_css = 'pass' %}
+      {% set finding_icon = '✓' %}
+    {% elif raw_status in ['FAIL', 'FAILED', 'FAILING'] %}
+      {% set finding_label = 'FAIL' %}
+      {% set finding_css = 'fail' %}
+      {% set finding_icon = '✗' %}
+    {% elif raw_status in ['NOT RUN', 'NOT_RUN', 'NOT-RUN'] %}
+      {% set finding_label = 'NOT RUN' %}
+      {% set finding_css = 'not-run' %}
+      {% set finding_icon = '—' %}
+    {% endif %}
+
+    {% set required_evidence_missing = false %}
+    {% if finding_id == 'oos_decay' %}
+      {% if evidence.is_sharpe is not defined or evidence.is_sharpe is none or evidence.oos_sharpe is not defined or evidence.oos_sharpe is none or evidence.is_total_return is not defined or evidence.is_total_return is none or evidence.oos_total_return is not defined or evidence.oos_total_return is none %}
+        {% set required_evidence_missing = true %}
+      {% endif %}
+      {% if evidence.is_activity_available is defined and not evidence.is_activity_available %}{% set required_evidence_missing = true %}{% endif %}
+      {% if evidence.oos_activity_available is defined and not evidence.oos_activity_available %}{% set required_evidence_missing = true %}{% endif %}
+    {% elif finding_id == 'cost_fragility' %}
+      {% if evidence.base_oos_return is not defined or evidence.base_oos_return is none or evidence.stressed_oos_return is not defined or evidence.stressed_oos_return is none %}
+        {% set required_evidence_missing = true %}
+      {% endif %}
+      {% if evidence.base_case_present is defined and not evidence.base_case_present %}{% set required_evidence_missing = true %}{% endif %}
+      {% if evidence.required_stress_present is defined and not evidence.required_stress_present %}{% set required_evidence_missing = true %}{% endif %}
+      {% if evidence.oos_activity_available is defined and not evidence.oos_activity_available %}{% set required_evidence_missing = true %}{% endif %}
+    {% elif finding_id == 'parameter_fragility' %}
+      {% if evidence.chosen_cell is not defined or not evidence.chosen_cell or evidence.neighbors is not defined or not evidence.neighbors or evidence.reference_sharpe is not defined or evidence.reference_sharpe is none %}
+        {% set required_evidence_missing = true %}
+      {% endif %}
+    {% endif %}
+    {% if required_evidence_missing %}
+      {% set finding_label = 'INCONCLUSIVE' %}
+      {% set finding_css = 'inconclusive' %}
+      {% set finding_icon = '?' %}
+    {% endif %}
+
+    <h3><span class="status-badge status-{{ finding_css }}">{{ finding_icon }} {{ finding_id | replace('_', ' ') }} — {{ finding_label }}</span></h3>
+    {% if required_evidence_missing %}
+    <p><strong>Required evidence is unavailable or insufficient.</strong> This check is
+    INCONCLUSIVE, not PASS, even if an upstream label suggested otherwise.</p>
+    {% else %}
+    <p>{{ f.summary | default('No check summary was reported.', true) }}</p>
+    {% endif %}
+    <p style="font-size:0.82rem;color:var(--soft)">Rule: {{ f.rule | default('Not reported', true) }}<br>
+    Evidence:
+    {% if finding_id == 'oos_decay' %}IS Sharpe {{ num_or_unavailable(evidence.is_sharpe) }} → OOS Sharpe {{ num_or_unavailable(evidence.oos_sharpe) }}; IS return {{ pct_or_unavailable(evidence.is_total_return) }} → OOS return {{ pct_or_unavailable(evidence.oos_total_return) }}{% if evidence.is_activity_available is defined %}; IS activity {{ 'available' if evidence.is_activity_available else 'unavailable' }}{% endif %}{% if evidence.oos_activity_available is defined %}; OOS activity {{ 'available' if evidence.oos_activity_available else 'unavailable' }}{% endif %}
+    {% elif finding_id == 'cost_fragility' %}OOS return at declared costs {{ pct_or_unavailable(evidence.base_oos_return) }} → at {{ value_or_unavailable(evidence.required_multiplier) }}× costs {{ pct_or_unavailable(evidence.stressed_oos_return) }}{% if evidence.base_case_present is defined %}; base case {{ 'present' if evidence.base_case_present else 'missing' }}{% endif %}{% if evidence.required_stress_present is defined %}; required stress {{ 'present' if evidence.required_stress_present else 'missing' }}{% endif %}
+    {% elif finding_id == 'parameter_fragility' %}{% if evidence.chosen_cell %}chosen cell ({{ value_or_unavailable(evidence.chosen_cell.ma_days) }}d) Sharpe {{ num_or_unavailable(evidence.chosen_cell.sharpe) }}{% else %}<span class="status-inconclusive">chosen cell not available</span>{% endif %}{% if evidence.neighbors %}; adjacent cells {% for nb in evidence.neighbors %}{{ value_or_unavailable(nb.ma_days) }}d → Sharpe {{ num_or_unavailable(nb.sharpe) }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}; <span class="status-inconclusive">no adjacent-cell evidence</span>{% endif %}
+    {% else %}<span class="status-inconclusive">No display schema is available for this check.</span>
+    {% endif %}
+    · artifact <code>{{ artifact_ids.falsification | default('not available', true) }}</code></p>
+    {% else %}
+    <p><strong class="status-not-run">NOT RUN — no falsification findings were reported.</strong>
+    The absence of findings is not a pass.</p>
+    {% endfor %}
+  </div>
+
+  <h2>8 · Show the math</h2>
+  <p style="font-size:0.9rem">Every displayed number resolves to a content-hashed ledger
+  artifact. Formulas and inputs for the headline metrics:</p>
+  {% for seg_name, seg in [('In-sample', is_result), ('Out-of-sample', oos_result)] %}
+  <details>
+    <summary>{{ seg_name }} metric derivations (artifact <code>{{ artifact_ids.is_result if seg_name == 'In-sample' else artifact_ids.oos_result }}</code>)</summary>
+    <div class="tablewrap" role="region" aria-labelledby="derivation-caption-{{ loop.index }}" tabindex="0">
+    <table>
+      <caption id="derivation-caption-{{ loop.index }}">{{ seg_name }} metric formulas and inputs</caption>
+      <thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Formula</th><th scope="col">Key inputs</th></tr></thead>
+      <tbody>
+      {% set m = seg.strategy_metrics %}
+      <tr><th scope="row">{{ Basis_term }}</th><td>{{ pct_or_unavailable(m.total_return) }}</td><td><code>{{ m.formulas.total_return | default('Not available', true) }}</code></td><td>start {{ value_or_unavailable(m.start_date) }} · end {{ value_or_unavailable(m.end_date) }} · final {{ money_or_unavailable(m.final_equity) }}</td></tr>
+      <tr><th scope="row">CAGR</th><td>{{ pct_or_unavailable(m.cagr) }}</td><td><code>{{ m.formulas.cagr | default('Not available', true) }}</code></td><td>n_bars = {{ value_or_unavailable(m.n_bars) }}</td></tr>
+      <tr><th scope="row">Ann. volatility</th><td>{{ pct_or_unavailable(m.ann_vol) }}</td><td><code>{{ m.formulas.ann_vol | default('Not available', true) }}</code></td><td>daily equity series in artifact</td></tr>
+      <tr><th scope="row">Sharpe</th><td>{{ num_or_unavailable(m.sharpe) }}</td><td><code>{{ m.formulas.sharpe | default('Not available', true) }}</code></td><td>rf = 0</td></tr>
+      <tr><th scope="row">Max drawdown</th><td>{{ pct_or_unavailable(m.max_drawdown) }}</td><td><code>{{ m.formulas.max_drawdown | default('Not available', true) }}</code></td><td>running peak of equity</td></tr>
+      <tr><th scope="row">Total costs</th><td>{{ money_or_unavailable(m.total_costs) }}</td><td><code>{{ m.formulas.total_costs | default('Not available', true) }}</code></td><td>{{ value_or_unavailable(m.n_trades) }} fills in trade ledger</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </details>
+  {% endfor %}
+  <details>
+    <summary>Ledger index — every artifact behind this report</summary>
+    <div class="tablewrap" role="region" aria-labelledby="ledger-caption" tabindex="0">
+    <table>
+      <caption id="ledger-caption">Sealed report artifact index</caption>
+      <thead><tr><th scope="col">Artifact</th><th scope="col">Kind</th><th scope="col">SHA-256</th><th scope="col">Producer</th></tr></thead>
+      <tbody>
+      {% for e in ledger.entries | default([], true) %}
+      <tr><th scope="row"><code>{{ e.artifact_id }}</code></th><td>{{ e.kind }}</td><td><code>{{ e.sha256[:20] }}…</code></td><td><code>{{ e.producer }}</code></td></tr>
+      {% else %}
+      <tr><td colspan="4" style="text-align:left"><strong class="status-not-run">NOT RUN.</strong> No ledger entries were reported.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:0.82rem">Result hash <code>{{ ledger.result_hash }}</code> = sha256 of the sorted artifact hashes. {{ ledger.note }}</p>
+  </details>
+
+  <h2>9 · Research follow-up checklist</h2>
+  <p style="font-size:0.9rem">Neutral questions this report cannot answer — not suggestions to act:</p>
+  <ul class="checklist">
+    <li>Which assumptions here would you re-test first (costs, window, date range), and what result would change your mind?</li>
+    <li>This report covers one instrument and one rule family. What evidence would you need before treating the pattern as more than instrument-specific?</li>
+    <li>What would this rule have to show on data it has never seen (a future snapshot) for you to keep trusting it?</li>
+    <li>Which of the falsification findings above, if any, remains unexplained by your original hypothesis?</li>
+    <li>What new data or a longer out-of-sample window would most change this picture?</li>
+  </ul>
+
+  <h2>10 · Limitations of this release</h2>
+  <ul>
+    {% if is_user_uploaded %}
+    <li><strong>User-provided data.</strong> User-provided and integrity-checked; source accuracy was not independently authenticated. QuantLens validated and sealed the normalized structure and content hashes; the source values, usage rights, symbol, timezone, and split-adjustment attestation remain the user's responsibility.</li>
+    {% elif is_licensed %}
+    <li><strong>Licensed provider data.</strong> Provider, feed, instrument, adjustment, revision, hashes, attribution, retention, and permitted-use flags are sealed in DatasetManifestV2 and re-checked at run/report/export boundaries. Historical provider data still cannot represent live fills or future conditions.</li>
+    {% else %}
+    <li><strong>Synthetic data.</strong> Every series is generated by a seeded model. No real market data was used, so these numbers say nothing about any actual security.</li>
+    {% endif %}
+    <li>Natural-language parsing used the deterministic local fallback; no AI provider received the hypothesis. Guarded model-generated explanations are not enabled in this build.</li>
+    <li>Ledger v0 uses local write-once content-hashed files and verifies every artifact
+    against its manifest before rendering. It is not yet the multi-user append-only
+    remote ledger planned for a later slice. Because this local prototype has no external signature or
+    trusted remote root, a local attacker who coherently replaces the entire ledger and
+    manifest is outside this prototype's tamper-detection boundary.</li>
+    <li>Single strategy family, single instrument per run, one export format, and a local single-user workspace with a fixed run allowance — by design in this release.</li>
+    <li>Backtested, hypothetical results — even on real data — differ from live results for reasons including market impact, borrowing, taxes, and regime change.</li>
+  </ul>
+
+  <div class="disclosure" role="note">
+    <strong>Standing disclosure.</strong> QuantLens tests rules you author against
+    historical data. It never recommends a security, position, timing, threshold, or
+    action, and it never certifies that a strategy is safe or profitable.
+    {% if report_complete %}&ldquo;Evidence-complete&rdquo; here means only that every
+    required check in the declared battery produced conclusive evidence and sealed its
+    results to the ledger — it is not an endorsement of quality.{% elif battery_label == 'NOT RUN' %}This run is
+    <strong>not evidence-complete</strong>; at least one required check was not run or not
+    reported.{% else %}This run is <strong>not evidence-complete</strong>; at least one
+    required check is inconclusive or lacks required evidence.{% endif %}
+    Hypothetical performance has inherent limitations and does not represent actual
+    trading. {% if is_user_uploaded %}The user-provided source was integrity-checked but
+    not independently authenticated.{% elif is_licensed %}{{ provenance.required_attribution }}{% else %}The bundled sample series are synthetic and illustrative only.{% endif %} This report is not
+    investment advice, not an approval, and not a forecast.
+  </div>
+  <p style="font-size:0.78rem;color:var(--soft)">Rendered by the deterministic template
+  renderer (no AI narrative) for run <code>{{ manifest.manifest_id }}</code>.
+  Print this page for the archival copy.</p>
+</main>
+</body>
+</html>

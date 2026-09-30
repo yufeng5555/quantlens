@@ -1,0 +1,17 @@
+# QuantLens Gate 2 — pinned direct dependencies (official PyPI only).
+# Full resolved lockfile: requirements-lock.txt (pip freeze).
+fastapi==0.141.1
+uvicorn==0.34.0
+pydantic==2.10.4
+jsonschema==4.23.0
+pandas==2.2.3
+pandas_market_calendars==5.3.2
+numpy==2.2.1
+jinja2==3.1.6
+pyyaml==6.0.2
+pytest==9.0.3
+httpx==0.28.1
+cryptography==50.0.0
+
+# Explicit ASGI security floor for the portable course-project release.
+starlette==1.7.0

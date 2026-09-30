@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/valuation-ledger-index-v1.json",
+  "title": "QuantLens dormant ledger-v1 index",
+  "type": "object",
+  "required": ["ledger_semantics_version", "ledger_id", "entries", "result_hash"],
+  "additionalProperties": false,
+  "properties": {
+    "ledger_semantics_version": { "const": "ledger-v1" },
+    "ledger_id": { "type": "string", "pattern": "^ldg-[0-9a-f]{64}$" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "result_hash": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "entry": {
+      "type": "object",
+      "required": ["artifact_id", "kind", "sha256", "path", "producer"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*-[0-9a-f]{12}$" },
+        "kind": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "path": { "type": "string", "pattern": "^artifact_[a-z][a-z0-9_]*\\.json$" },
+        "producer": { "type": "string", "minLength": 1, "pattern": "^[\\x21-\\x7e]+$" }
+      }
+    }
+  }
+}

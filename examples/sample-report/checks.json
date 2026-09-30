@@ -1,0 +1,10 @@
+{
+  "status": "published",
+  "data_label": "SYNTHETIC",
+  "battery_profile": "battery-v2",
+  "parameter_sensitivity": "NOT_RUN",
+  "primary_final_evaluations": 1,
+  "final_counterfactual_evaluations": 0,
+  "result_hash": "sha256:8ccb0016b5c450d94077a14a760543fee7b4858b5e53056f28e15b09310c4f59",
+  "report_sha256": "d4b8ea0e0d8c41b9e909c0af7bccdee6ec722b4c8e962caacc47329631398d8c"
+}

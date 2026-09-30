@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/dataset-manifest-v2.json",
+  "title": "QuantLens Licensed Dataset Manifest v2",
+  "type": "object",
+  "required": [
+    "manifest_version", "dataset_id", "actor_id", "source", "instrument",
+    "frequency", "timezone", "adjustment_mode", "row_count", "coverage",
+    "retrieved_at", "revision", "provider_payload_sha256",
+    "normalized_rows_sha256", "normalized_csv_sha256", "quality_report_sha256",
+    "rights", "normalizer_version", "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": { "const": "dataset-v2" },
+    "dataset_id": { "type": "string", "pattern": "^ds_[0-9a-f]{32}$" },
+    "actor_id": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "source": {
+      "type": "object",
+      "required": ["kind", "provider_id", "feed", "tier"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "licensed_provider" },
+        "provider_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$" },
+        "feed": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "tier": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "required": [
+        "instrument_id", "symbol", "display_name", "asset_class", "mic",
+        "currency", "country"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "instrument_id": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.]{0,9}$" },
+        "display_name": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "asset_class": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "mic": { "type": "string", "pattern": "^[A-Z0-9]{4}$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "country": { "type": "string", "minLength": 2, "maxLength": 64 }
+      }
+    },
+    "frequency": { "const": "daily" },
+    "timezone": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "adjustment_mode": { "enum": ["none", "splits", "dividends", "all"] },
+    "row_count": { "type": "integer", "minimum": 10, "maximum": 250000 },
+    "coverage": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      }
+    },
+    "retrieved_at": { "type": "string", "format": "date-time" },
+    "revision": { "type": ["string", "null"], "maxLength": 160 },
+    "provider_payload_sha256": { "$ref": "#/$defs/sha256" },
+    "normalized_rows_sha256": { "$ref": "#/$defs/sha256" },
+    "normalized_csv_sha256": { "$ref": "#/$defs/sha256" },
+    "quality_report_sha256": { "$ref": "#/$defs/sha256" },
+    "rights": {
+      "type": "object",
+      "required": [
+        "policy_version", "policy_sha256", "use", "retention",
+        "required_attribution"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "policy_version": { "const": "market-data-rights-v1" },
+        "policy_sha256": { "$ref": "#/$defs/sha256" },
+        "use": {
+          "type": "object",
+          "required": ["non_display_analytics", "external_display", "report_export"],
+          "additionalProperties": false,
+          "properties": {
+            "non_display_analytics": { "type": "boolean" },
+            "external_display": { "type": "boolean" },
+            "report_export": { "type": "boolean" }
+          }
+        },
+        "retention": {
+          "type": "object",
+          "required": ["raw_days", "derived_artifact_days"],
+          "additionalProperties": false,
+          "properties": {
+            "raw_days": { "type": "integer", "minimum": 1 },
+            "derived_artifact_days": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "required_attribution": { "type": "string", "minLength": 1, "maxLength": 240 }
+      }
+    },
+    "normalizer_version": { "const": "licensed-daily-v2" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

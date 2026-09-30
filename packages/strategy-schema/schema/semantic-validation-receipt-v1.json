@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/semantic-validation-receipt-v1.json",
+  "title": "QuantLens FinancialSemanticValidatorV1 receipt",
+  "type": "object",
+  "required": [
+    "validator_version",
+    "ledger_id",
+    "result_hash",
+    "financial_contract_sha256",
+    "validated_execution_ids",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "validator_version": { "const": "financial-semantic-validator-v1" },
+    "ledger_id": { "type": "string", "pattern": "^ldg-[0-9a-f]{64}$" },
+    "result_hash": { "$ref": "#/$defs/sha256" },
+    "financial_contract_sha256": { "$ref": "#/$defs/sha256" },
+    "validated_execution_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^exec-[0-9a-f]{64}$" }
+    },
+    "status": { "const": "PASS" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/financial-contract-v1.json",
+  "title": "QuantLens dormant financial contract v1",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "ledger_semantics_version",
+    "financial_semantics_version",
+    "financial_semantics_sha256",
+    "metric_semantics_version",
+    "metric_semantics_sha256",
+    "initial_capital",
+    "return_basis",
+    "cash_return_policy",
+    "risk_free_policy",
+    "minimum_acceptable_return_policy",
+    "currency_policy",
+    "calendar_binding",
+    "position_sizing_policy",
+    "execution_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": { "const": "financial-contract-v1" },
+    "ledger_semantics_version": { "const": "ledger-v1" },
+    "financial_semantics_version": { "const": "financial-semantics-v2" },
+    "financial_semantics_sha256": { "$ref": "#/$defs/sha256" },
+    "metric_semantics_version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "metric_semantics_sha256": { "$ref": "#/$defs/sha256" },
+    "initial_capital": { "type": "number", "exclusiveMinimum": 0 },
+    "return_basis": {
+      "type": "object",
+      "required": ["kind", "split_adjusted", "distribution_policy", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "price_return" },
+        "split_adjusted": { "const": true },
+        "distribution_policy": { "const": "excluded" },
+        "source": { "const": "dataset_manifest" }
+      }
+    },
+    "cash_return_policy": {
+      "type": "object",
+      "required": ["kind", "annual_rate", "day_count"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "zero_yield" },
+        "annual_rate": { "const": 0.0 },
+        "day_count": { "const": "252_sessions" }
+      }
+    },
+    "risk_free_policy": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": { "kind": { "const": "same_as_cash_policy" } }
+    },
+    "minimum_acceptable_return_policy": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": { "kind": { "const": "same_as_risk_free_policy" } }
+    },
+    "currency_policy": {
+      "type": "object",
+      "required": ["base_currency", "fx_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "base_currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "fx_policy": { "const": "single_currency_only" }
+      }
+    },
+    "calendar_binding": {
+      "type": "object",
+      "required": [
+        "exchange_calendar_id",
+        "exchange_calendar_version",
+        "acquisition_validation_receipt_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "exchange_calendar_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        "exchange_calendar_version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        "acquisition_validation_receipt_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "position_sizing_policy": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": { "kind": { "const": "full_notional_fractional_shares" } }
+    },
+    "execution_policy": {
+      "type": "object",
+      "required": ["decision_time", "fill_time", "slippage_model", "terminal_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "decision_time": { "const": "close_t" },
+        "fill_time": { "const": "next_valid_session_open" },
+        "slippage_model": { "const": "adverse_effective_fill_price" },
+        "terminal_policy": { "const": "mark_to_market_no_forced_liquidation" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

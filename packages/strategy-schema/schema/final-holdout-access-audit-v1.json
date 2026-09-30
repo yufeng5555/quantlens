@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/final-holdout-access-audit-v1.json",
+  "title": "QuantLens dormant final-holdout access audit v1",
+  "description": "Gate E Stop A data contract for the signed audit payload the holdout authority records for every access attempt, whether evaluation succeeds or fails. It binds the exact anchor and run identities and records the request/lease/consume outcome, timestamps and authority identity. It never contains a development prompt, parameter grid, raw market bar, holdout metric value or any secret. Timestamps are whole-second UTC so lexicographic order equals chronological order. The signature scheme is pinned: ed25519 with exactly a 64-byte signature (128 lowercase hex characters).",
+  "type": "object",
+  "required": [
+    "audit_version", "access_protocol", "release_id", "anchor_id", "anchor_sha256",
+    "tenant_id", "workspace_id", "run_id", "request_id", "lease_id",
+    "requested_at", "decided_at", "consumed_at", "outcome", "denial_reason",
+    "authority_id", "authority_key_id", "signature_algorithm", "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "audit_version": { "const": "final-holdout-access-audit-v1" },
+    "access_protocol": { "const": "final-holdout-access-v1" },
+    "release_id": { "const": "quantlens-financial-v3" },
+    "anchor_id": { "type": "string", "pattern": "^vpa-[0-9a-f]{32}$" },
+    "anchor_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "workspace_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "request_id": { "type": "string", "pattern": "^fha-req-[0-9a-f]{32}$" },
+    "lease_id": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string", "pattern": "^fha-lease-[0-9a-f]{32}$" }
+      ]
+    },
+    "requested_at": { "$ref": "#/$defs/utc_second" },
+    "decided_at": { "$ref": "#/$defs/utc_second" },
+    "consumed_at": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/utc_second" }
+      ]
+    },
+    "outcome": {
+      "enum": ["denied", "lease_expired", "evaluation_succeeded", "evaluation_failed"]
+    },
+    "denial_reason": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[\\x20-\\x7e]+$" }
+      ]
+    },
+    "authority_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "authority_key_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "signature_algorithm": { "const": "ed25519" },
+    "signature": { "type": "string", "pattern": "^[0-9a-f]{128}$" }
+  },
+  "$defs": {
+    "prefixed_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "utc_second": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    }
+  }
+}

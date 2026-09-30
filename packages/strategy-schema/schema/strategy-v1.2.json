@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/strategy-v1.2.json",
+  "title": "QuantLens Strategy DSL v1.2",
+  "description": "Licensed-provider extension: one DatasetManifestV2 daily dataset is bound into the confirmed strategy.",
+  "type": "object",
+  "required": ["dsl_version", "meta", "universe", "family", "rule", "calendar", "costs", "benchmark", "data", "validation"],
+  "additionalProperties": false,
+  "properties": {
+    "dsl_version": { "const": "1.2" },
+    "meta": {
+      "type": "object", "required": ["name"], "additionalProperties": false,
+      "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 120 } }
+    },
+    "universe": {
+      "type": "object", "required": ["symbol"], "additionalProperties": false,
+      "properties": { "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.]{0,9}$" } }
+    },
+    "family": { "const": "ma_long_flat" },
+    "rule": {
+      "type": "object", "required": ["type", "ma_days"], "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["price_vs_ma", "ma_crossover"] },
+        "fast_ma_days": { "type": ["integer", "null"], "minimum": 2, "maximum": 400 },
+        "ma_days": { "type": "integer", "minimum": 2, "maximum": 400 }
+      }
+    },
+    "calendar": {
+      "type": "object", "required": ["frequency", "execution"], "additionalProperties": false,
+      "properties": { "frequency": { "const": "daily" }, "execution": { "const": "next_open" } }
+    },
+    "costs": {
+      "type": "object", "required": ["commission_bps", "slippage_bps"], "additionalProperties": false,
+      "properties": {
+        "commission_bps": { "type": "number", "minimum": 0, "maximum": 100 },
+        "slippage_bps": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "benchmark": {
+      "type": "object", "required": ["type", "symbol"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "hold_from_first_decision" },
+        "symbol": { "const": "same_as_universe" }
+      }
+    },
+    "data": {
+      "type": "object", "required": ["snapshot_policy", "source", "range"], "additionalProperties": false,
+      "properties": {
+        "snapshot_policy": { "const": "pinned" },
+        "source": {
+          "type": "object", "required": ["kind", "dataset_id", "dataset_manifest_sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "licensed_provider" },
+            "dataset_id": { "type": "string", "pattern": "^ds_[0-9a-f]{32}$" },
+            "dataset_manifest_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+          }
+        },
+        "range": {
+          "type": "object", "required": ["start", "end"], "additionalProperties": false,
+          "properties": {
+            "start": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+            "end": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object", "required": ["is_oos_split", "sensitivity", "cost_stress"], "additionalProperties": false,
+      "properties": {
+        "is_oos_split": {
+          "type": "object", "required": ["oos_fraction"], "additionalProperties": false,
+          "properties": { "oos_fraction": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 } }
+        },
+        "sensitivity": {
+          "type": "object", "required": ["grid"], "additionalProperties": false,
+          "properties": {
+            "grid": {
+              "type": "object", "required": ["ma_days"], "additionalProperties": false,
+              "properties": {
+                "ma_days": { "type": "array", "items": { "type": "integer", "minimum": 2, "maximum": 400 }, "minItems": 2, "maxItems": 12, "uniqueItems": true }
+              }
+            }
+          }
+        },
+        "cost_stress": {
+          "type": "object", "required": ["multipliers"], "additionalProperties": false,
+          "properties": {
+            "multipliers": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 10 }, "minItems": 2, "maxItems": 8, "uniqueItems": true }
+          }
+        }
+      }
+    }
+  }
+}

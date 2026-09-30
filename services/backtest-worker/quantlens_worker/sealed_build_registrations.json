@@ -1,0 +1,129 @@
+{
+  "format": "sealed-build-registry-v1",
+  "registrations": [
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:0e588a13600b26768bdc9fdfa225341f51237f8bddcd6590447a6713a8b4e99d"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:0e588a13600b26768bdc9fdfa225341f51237f8bddcd6590447a6713a8b4e99d"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:587b0ad5cae12c3251bbc35fe7db2112864b8335aced3e8b42f0a6cb678cff17"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:587b0ad5cae12c3251bbc35fe7db2112864b8335aced3e8b42f0a6cb678cff17"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:614fbc53ca894c44e195ac25f8bf385e464816081e315234387e812c798ad9a3"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:614fbc53ca894c44e195ac25f8bf385e464816081e315234387e812c798ad9a3"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:b24c21d6c38c7445e99999ac3a5332fa063e6bd4048ca18963061b3483702cd8"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:b24c21d6c38c7445e99999ac3a5332fa063e6bd4048ca18963061b3483702cd8"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:fccc43727c068c7d1763cd057f3ee8ede06cf8a46a88b7b375488c48a76b9098"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:fccc43727c068c7d1763cd057f3ee8ede06cf8a46a88b7b375488c48a76b9098"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:f2cf6a3d40f33f0eed8e5f04fcba3bfae087cfbfdf5cc4e7a5c5098c4afcd14a"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:f2cf6a3d40f33f0eed8e5f04fcba3bfae087cfbfdf5cc4e7a5c5098c4afcd14a"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:207ea29f11dfd19ffe8e3db78e1160d26674774b87d683e6b7b86fd0b8ba5c85"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:207ea29f11dfd19ffe8e3db78e1160d26674774b87d683e6b7b86fd0b8ba5c85"
+    },
+    {
+      "contract_id": "corrected-financial-semantics-v3-ledger-v1",
+      "image_digest": "local-runtime-sha256:207ea29f11dfd19ffe8e3db78e1160d26674774b87d683e6b7b86fd0b8ba5c85"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:34b57444bd8339932d4070ade6aafc062a0ca9352966d91a91bd0410f5996007"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:34b57444bd8339932d4070ade6aafc062a0ca9352966d91a91bd0410f5996007"
+    },
+    {
+      "contract_id": "corrected-financial-semantics-v3-ledger-v1",
+      "image_digest": "local-runtime-sha256:34b57444bd8339932d4070ade6aafc062a0ca9352966d91a91bd0410f5996007"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:1836bc60d4ded1b3de6512ff4ccb9c310159bf5fa58a5bfb534e91aaf379d48f"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:1836bc60d4ded1b3de6512ff4ccb9c310159bf5fa58a5bfb534e91aaf379d48f"
+    },
+    {
+      "contract_id": "corrected-financial-semantics-v3-ledger-v1",
+      "image_digest": "local-runtime-sha256:1836bc60d4ded1b3de6512ff4ccb9c310159bf5fa58a5bfb534e91aaf379d48f"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:8e9775e437dc618dfd538b1c0c3173630c2eeba012ef71c7f25b5ef5c3b7cc8b"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:8e9775e437dc618dfd538b1c0c3173630c2eeba012ef71c7f25b5ef5c3b7cc8b"
+    },
+    {
+      "contract_id": "corrected-financial-semantics-v3-ledger-v1",
+      "image_digest": "local-runtime-sha256:8e9775e437dc618dfd538b1c0c3173630c2eeba012ef71c7f25b5ef5c3b7cc8b"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:5d4bde6c2fdde059499a24b67e9dbf312b4278d072e14e2e1d04404d37fd848e"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:5d4bde6c2fdde059499a24b67e9dbf312b4278d072e14e2e1d04404d37fd848e"
+    },
+    {
+      "contract_id": "corrected-financial-semantics-v3-ledger-v1",
+      "image_digest": "local-runtime-sha256:5d4bde6c2fdde059499a24b67e9dbf312b4278d072e14e2e1d04404d37fd848e"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:28f051430a794d0e67e6b1552c19d8fa7acdc6089b9440311b92858a57ab2f18"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:28f051430a794d0e67e6b1552c19d8fa7acdc6089b9440311b92858a57ab2f18"
+    },
+    {
+      "contract_id": "legacy-battery-v1-ledger-v0",
+      "image_digest": "local-runtime-sha256:967a9c743075654616c030af15e249823dd9552fa4c1b4237bd54a7b9e159c70"
+    },
+    {
+      "contract_id": "legacy-battery-v2-ledger-v0",
+      "image_digest": "local-runtime-sha256:967a9c743075654616c030af15e249823dd9552fa4c1b4237bd54a7b9e159c70"
+    }
+  ]
+}

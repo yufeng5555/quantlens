@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/validation-plan-anchor-v1.json",
+  "title": "QuantLens dormant authenticated validation-plan anchor v1",
+  "description": "Gate E Stop A data contract for the control-plane anchor issued before any final-holdout lease. Contains identities, exact hashes, the derived final window with its warm-up boundary, issuance/expiry/nonce and the issuer key/signature. It never contains a private key, token, credential, raw market bar or development-battery detail. Timestamps are whole-second UTC so lexicographic order equals chronological order. Index fields use the reviewed end-exclusive convention of validation-partitions-v2. The signature scheme is pinned: ed25519 with exactly a 64-byte signature (128 lowercase hex characters).",
+  "type": "object",
+  "required": [
+    "anchor_version", "anchor_id", "release_id", "tenant_id", "workspace_id",
+    "run_id", "confirmed_spec_hash", "snapshot_sha256", "validation_plan_version",
+    "validation_plan_sha256", "locked_rule_sha256", "base_costs_sha256",
+    "final_holdout_fraction", "final_window", "issued_at", "expires_at", "nonce",
+    "issuer_key_id", "signature_algorithm", "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "anchor_version": { "const": "validation-plan-anchor-v1" },
+    "anchor_id": { "type": "string", "pattern": "^vpa-[0-9a-f]{32}$" },
+    "release_id": { "const": "quantlens-financial-v3" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "workspace_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "confirmed_spec_hash": { "$ref": "#/$defs/prefixed_sha256" },
+    "snapshot_sha256": { "$ref": "#/$defs/bare_sha256" },
+    "validation_plan_version": { "const": "validation-plan-v3" },
+    "validation_plan_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "locked_rule_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "base_costs_sha256": { "$ref": "#/$defs/prefixed_sha256" },
+    "final_holdout_fraction": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "final_window": {
+      "type": "object",
+      "required": [
+        "n_bars", "start_index", "end_index", "bars",
+        "warmup_start_index", "warmup_bars"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "n_bars": { "type": "integer", "minimum": 1 },
+        "start_index": { "type": "integer", "minimum": 1 },
+        "end_index": { "type": "integer", "minimum": 2 },
+        "bars": { "type": "integer", "minimum": 1 },
+        "warmup_start_index": { "type": "integer", "minimum": 0 },
+        "warmup_bars": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "issued_at": { "$ref": "#/$defs/utc_second" },
+    "expires_at": { "$ref": "#/$defs/utc_second" },
+    "nonce": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+    "issuer_key_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[\\x21-\\x7e]+$" },
+    "signature_algorithm": { "const": "ed25519" },
+    "signature": { "type": "string", "pattern": "^[0-9a-f]{128}$" }
+  },
+  "$defs": {
+    "prefixed_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "bare_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "utc_second": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    }
+  }
+}

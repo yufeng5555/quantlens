@@ -1,0 +1,10 @@
+{
+  "document": "metric-semantics-v2-identity",
+  "semantics_version": "metrics-v2",
+  "scope": "Validated metric definitions for battery-v2 and battery-v3 evidence: every metric surface projects only the independently validated ledger; no metric is recomputed from raw bars at presentation time and no surface may rank or endorse a strategy.",
+  "defined_by": {
+    "packages/strategy-schema/schema/semantic-validation-receipt-v1.json": "sha256:0cbf918964c63de8a2a0883522fb9d7e3e29d429e7e64d401bd6eae34b9b1bf9",
+    "packages/strategy-schema/schema/validation-plan-v3.json": "sha256:2495e00dd700d206568d44dfcb6b9e4037d75996963bd83435c9642d6db8b5c6",
+    "packages/strategy-schema/schema/market-observations-v2.json": "sha256:51c22af6f5e2233bf1f7fb9dbda224e6e0270518dedbc017c3aa0a113a74b896"
+  }
+}

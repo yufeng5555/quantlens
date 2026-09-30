@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/manifest-v1.json",
+  "title": "QuantLens Run Manifest v1",
+  "type": "object",
+  "required": [
+    "manifest_id", "manifest_version", "spec_hash", "spec_version", "dsl_schema_version",
+    "snapshot_id", "snapshot_sha256", "dataset_id", "dataset_manifest_sha256",
+    "engine_semver", "image_digest", "battery_config_hash", "actor_id", "created_at",
+    "result_hash", "data_label", "confirmation_receipt_hash"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_id": { "type": "string", "minLength": 8 },
+    "manifest_version": { "const": "v1" },
+    "spec_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "dsl_schema_version": { "const": "1.1" },
+    "snapshot_id": { "type": "string", "pattern": "^usr-[0-9a-f]{16}$" },
+    "snapshot_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "dataset_id": { "type": "string", "pattern": "^ds_[0-9a-f]{32}$" },
+    "dataset_manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "engine_semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "image_digest": { "type": "string", "pattern": "^local-runtime-sha256:[0-9a-f]{64}$" },
+    "battery_config_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "actor_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T.*" },
+    "result_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "data_label": { "const": "USER_UPLOADED" },
+    "confirmation_receipt_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

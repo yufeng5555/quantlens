@@ -1,0 +1,111 @@
+{
+  "entries": [
+    {
+      "artifact_id": "cost_stress-799992220532",
+      "kind": "cost_stress",
+      "path": "artifact_cost_stress.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "7999922205329bbd1bd3f6163a25fde9f053b20c274ae3bc521a13c0671a3555"
+    },
+    {
+      "artifact_id": "data_gaps-61555c27519d",
+      "kind": "data_gaps",
+      "path": "artifact_data_gaps.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "61555c27519ddcc7a91282b0cb332d010c8ad4f03d210183bb554da51c30d488"
+    },
+    {
+      "artifact_id": "development_result-a590d0205e2e",
+      "kind": "development_result",
+      "path": "artifact_development_result.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "a590d0205e2e560a2e4ef7d8ea4aabf218df4a414105101511abf1e56456b097"
+    },
+    {
+      "artifact_id": "evidence_status-05465cfcfec7",
+      "kind": "evidence_status",
+      "path": "artifact_evidence_status.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "05465cfcfec765dc45367a43d1439db1ee9022dd89ea25dc4672eecb3b3daa98"
+    },
+    {
+      "artifact_id": "falsification-b6c15d4de2d8",
+      "kind": "falsification",
+      "path": "artifact_falsification.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "b6c15d4de2d8edbc14b70b2926ce396e758a780482c544833b67406f6f9ab4ed"
+    },
+    {
+      "artifact_id": "final_holdout_execution_audit-317a7cfdc19c",
+      "kind": "final_holdout_execution_audit",
+      "path": "artifact_final_holdout_execution_audit.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "317a7cfdc19c4d168031d0e70243e47e144e21877c764355875c8e3860f0222e"
+    },
+    {
+      "artifact_id": "final_holdout_result-5e28db333f1a",
+      "kind": "final_holdout_result",
+      "path": "artifact_final_holdout_result.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "5e28db333f1a92a7f85421bbdbc0a2d91fdbc7c42eeeede321a3d4ea4e754ee1"
+    },
+    {
+      "artifact_id": "partitions-6d9deaedc73b",
+      "kind": "partitions",
+      "path": "artifact_partitions.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "6d9deaedc73b9f65b783f911e1dbda215a7fdeb7a4f6825d5a17e5edfefdfcf8"
+    },
+    {
+      "artifact_id": "regime_analysis-35a428cd5c5b",
+      "kind": "regime_analysis",
+      "path": "artifact_regime_analysis.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "35a428cd5c5b1e6e46450aaec37f1e17aea8c0aaffb0f8edbb0aecfdbb28ea7f"
+    },
+    {
+      "artifact_id": "sensitivity-b3f3775b2a5a",
+      "kind": "sensitivity",
+      "path": "artifact_sensitivity.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "b3f3775b2a5a607ec0d8c96432d752b6102db4ae9def678ff4fc8a6eab878236"
+    },
+    {
+      "artifact_id": "snapshot_ref-615560547f92",
+      "kind": "snapshot_ref",
+      "path": "artifact_snapshot_ref.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "615560547f929f5f30ee21dfd1da655e8f920d622bc0e637c25f78db61278abf"
+    },
+    {
+      "artifact_id": "spec-e2dcad7a5528",
+      "kind": "spec",
+      "path": "artifact_spec.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "e2dcad7a5528f34000f8642e17f041bc18d52d32340011605482a89b30ed1668"
+    },
+    {
+      "artifact_id": "temporal_integrity-750fe235df9f",
+      "kind": "temporal_integrity",
+      "path": "artifact_temporal_integrity.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "750fe235df9f060145a5643ac650b8ff27e636ae95ea21518851699804d4bee6"
+    },
+    {
+      "artifact_id": "validation_plan-d3d6006ab7ef",
+      "kind": "validation_plan",
+      "path": "artifact_validation_plan.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "d3d6006ab7ef4c1bb54141ad2944b745433df5bdb362c157ea3ed1c07b9ef7c2"
+    },
+    {
+      "artifact_id": "walk_forward-4cf621445676",
+      "kind": "walk_forward",
+      "path": "artifact_walk_forward.json",
+      "producer": "quantlens-engine/0.1.0+battery-v2",
+      "sha256": "4cf62144567670bac78a75cc77da16ec056aac9f5eb5f111b80e0279dc94d5be"
+    }
+  ],
+  "note": "Gate 2 ledger v0: write-once content-hashed artifacts; report rendering replays and verifies this sealed index.",
+  "result_hash": "sha256:8ccb0016b5c450d94077a14a760543fee7b4858b5e53056f28e15b09310c4f59"
+}

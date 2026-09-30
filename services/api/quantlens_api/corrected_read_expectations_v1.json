@@ -1,0 +1,16 @@
+{
+  "format": "corrected-read-expectations-v1",
+  "activation_release": "quantlens-financial-v3",
+  "battery_config_hash": "sha256:08d179f17878d19e31d337071c25d4fb3bbe92a2080f8f0d0ee4a4c35c07652b",
+  "financial_semantics": {
+    "financial-semantics-v2": "sha256:069d7d267b57b51cef24c6a52773b88a051a5956232400930fd1641e21520352"
+  },
+  "metric_semantics": {
+    "metrics-v2": "sha256:e1fa7060eb111909f5958ce9f9dcf2c49bfdcd3bb1c34154c3163caa50136c7f"
+  },
+  "semantics_documents": {
+    "financial-semantics-v2": "financial_semantics_v2_document.json",
+    "metrics-v2": "metric_semantics_v2_document.json"
+  },
+  "runtime_image_digest": "local-runtime-sha256:5d4bde6c2fdde059499a24b67e9dbf312b4278d072e14e2e1d04404d37fd848e"
+}

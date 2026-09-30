@@ -1,0 +1,57 @@
+{
+  "dsl_version": "1.0",
+  "meta": {
+    "name": "QQQ trend filter"
+  },
+  "universe": {
+    "symbol": "QQQ"
+  },
+  "family": "ma_long_flat",
+  "rule": {
+    "type": "price_vs_ma",
+    "fast_ma_days": null,
+    "ma_days": 200
+  },
+  "calendar": {
+    "frequency": "daily",
+    "execution": "next_open"
+  },
+  "costs": {
+    "commission_bps": 2,
+    "slippage_bps": 3
+  },
+  "benchmark": {
+    "type": "hold_from_first_decision",
+    "symbol": "same_as_universe"
+  },
+  "data": {
+    "snapshot_policy": "pinned",
+    "range": {
+      "start": "2010-01-04",
+      "end": "2020-12-31"
+    }
+  },
+  "validation": {
+    "is_oos_split": {
+      "oos_fraction": 0.3
+    },
+    "sensitivity": {
+      "grid": {
+        "ma_days": [
+          100,
+          150,
+          200,
+          250
+        ]
+      }
+    },
+    "cost_stress": {
+      "multipliers": [
+        0,
+        1,
+        2,
+        4
+      ]
+    }
+  }
+}

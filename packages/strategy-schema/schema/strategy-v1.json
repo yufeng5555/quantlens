@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/strategy-v1.json",
+  "title": "QuantLens Strategy DSL v1.0",
+  "description": "One family (ma_long_flat) on a fixed curated liquid-US-ETF universe. Deferred keys are reserved in the schema and rejected by the v1 scope check (02 §4).",
+  "type": "object",
+  "required": ["dsl_version", "meta", "universe", "family", "rule", "calendar", "costs", "benchmark", "data", "validation"],
+  "additionalProperties": false,
+  "properties": {
+    "dsl_version": { "const": "1.0" },
+    "meta": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 }
+      }
+    },
+    "universe": {
+      "type": "object",
+      "required": ["symbol"],
+      "additionalProperties": false,
+      "properties": {
+        "symbol": { "type": "string", "pattern": "^[A-Z]{1,6}$", "description": "Exactly one ETF from the curated liquid-US-ETF list (membership checked by semantic lint LINT_SYMBOL_UNIVERSE)." },
+        "symbols": { "type": "array", "items": { "type": "string" }, "description": "RESERVED (deferred): multi-asset universes. Rejected by v1 scope check." }
+      }
+    },
+    "family": {
+      "type": "string",
+      "enum": ["ma_long_flat", "rotation", "fixed_weights"],
+      "description": "v1 supports only ma_long_flat; rotation and fixed_weights are RESERVED (deferred) and rejected by the scope check."
+    },
+    "rule": {
+      "type": "object",
+      "required": ["type", "ma_days"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["price_vs_ma", "ma_crossover"] },
+        "fast_ma_days": { "type": ["integer", "null"], "minimum": 2, "maximum": 400, "description": "Used by ma_crossover only; null for price_vs_ma." },
+        "ma_days": { "type": "integer", "minimum": 2, "maximum": 400, "description": "MA window for price_vs_ma; slow MA window for ma_crossover." }
+      }
+    },
+    "calendar": {
+      "type": "object",
+      "required": ["frequency", "execution"],
+      "additionalProperties": false,
+      "properties": {
+        "frequency": { "const": "daily" },
+        "execution": { "const": "next_open", "description": "Decide at close t, fill at open t+1." }
+      }
+    },
+    "costs": {
+      "type": "object",
+      "required": ["commission_bps", "slippage_bps"],
+      "additionalProperties": false,
+      "properties": {
+        "commission_bps": { "type": "number", "minimum": 0, "maximum": 100 },
+        "slippage_bps": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "required": ["type", "symbol"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "hold_from_first_decision" },
+        "symbol": { "type": "string", "description": "'same_as_universe' or a curated-list symbol.", "pattern": "^(same_as_universe|[A-Z]{1,6})$" }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["snapshot_policy", "range"],
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_policy": { "const": "pinned" },
+        "range": {
+          "type": "object",
+          "required": ["start", "end"],
+          "additionalProperties": false,
+          "properties": {
+            "start": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+            "end": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["is_oos_split", "sensitivity", "cost_stress"],
+      "additionalProperties": false,
+      "properties": {
+        "is_oos_split": {
+          "type": "object",
+          "required": ["oos_fraction"],
+          "additionalProperties": false,
+          "properties": { "oos_fraction": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 } }
+        },
+        "sensitivity": {
+          "type": "object",
+          "required": ["grid"],
+          "additionalProperties": false,
+          "properties": {
+            "grid": {
+              "type": "object",
+              "required": ["ma_days"],
+              "additionalProperties": false,
+              "properties": {
+                "ma_days": { "type": "array", "items": { "type": "integer", "minimum": 2, "maximum": 400 }, "minItems": 2, "maxItems": 12, "uniqueItems": true, "description": "Grid over ma_days (price_vs_ma) or the slow window (ma_crossover)." }
+              }
+            }
+          }
+        },
+        "cost_stress": {
+          "type": "object",
+          "required": ["multipliers"],
+          "additionalProperties": false,
+          "properties": {
+            "multipliers": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 10 }, "minItems": 2, "maxItems": 8, "uniqueItems": true }
+          }
+        },
+        "walk_forward": { "description": "RESERVED (deferred): rejected by v1 scope check." },
+        "regime": { "description": "RESERVED (deferred): rejected by v1 scope check." }
+      }
+    }
+  }
+}

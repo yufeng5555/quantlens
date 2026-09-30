@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/dataset-manifest-v1.json",
+  "title": "QuantLens Dataset Manifest v1",
+  "type": "object",
+  "required": [
+    "manifest_version", "dataset_id", "actor_id", "source_format", "source_size",
+    "source_sha256", "mapping", "timezone", "price_adjustment", "rights_attested",
+    "symbol", "row_count", "coverage", "normalized_sha256", "logical_rows_sha256",
+    "quality_report_sha256", "normalizer_version", "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": { "const": "dataset-v1" },
+    "dataset_id": { "type": "string", "pattern": "^ds_[0-9a-f]{32}$" },
+    "actor_id": { "type": "string", "minLength": 1 },
+    "source_format": { "const": "csv" },
+    "source_size": { "type": "integer", "minimum": 1, "maximum": 12582912 },
+    "source_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "mapping": {
+      "type": "object",
+      "required": ["date", "open", "high", "low", "close", "volume"],
+      "additionalProperties": false,
+      "properties": {
+        "date": { "type": "string", "minLength": 1 },
+        "open": { "type": "string", "minLength": 1 },
+        "high": { "type": "string", "minLength": 1 },
+        "low": { "type": "string", "minLength": 1 },
+        "close": { "type": "string", "minLength": 1 },
+        "volume": { "type": "string", "minLength": 1 }
+      }
+    },
+    "timezone": { "type": "string", "minLength": 1 },
+    "price_adjustment": {
+      "description": "How the prices were adjusted before import. This is not a label: the report states what the figures mean, and stating price return over a dividend-adjusted series overstates what a reader would have earned.",
+      "enum": [
+        "user_attested_split_adjusted_ohlc",
+        "operator_attested_total_return_ohlc"
+      ]
+    },
+    "rights_attested": { "const": true },
+    "symbol": { "type": "string", "pattern": "^[A-Z][A-Z0-9.]{0,9}$" },
+    "row_count": { "type": "integer", "minimum": 10, "maximum": 250000 },
+    "coverage": {
+      "type": "object", "required": ["start", "end"], "additionalProperties": false,
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      }
+    },
+    "normalized_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "logical_rows_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "quality_report_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "normalizer_version": { "const": "gate4-csv-v1" },
+    "created_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T.*" }
+  }
+}

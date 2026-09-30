@@ -1,0 +1,17 @@
+{
+  "actor_id": "local-anonymous",
+  "battery_config_hash": "sha256:9893df089aa06b4c6e861985e0816dd3621a8f4daf3813bad4e2b1da878b9917",
+  "confirmation_receipt_hash": "f0198c5cbc926ec533daaf95b7341124f2f499d9e7d8f4f285716ff108cc0314",
+  "created_at": "2026-09-27T17:41:35.992044+00:00",
+  "data_label": "SYNTHETIC",
+  "dsl_schema_version": "1.0",
+  "engine_semver": "0.1.0",
+  "image_digest": "local-runtime-sha256:6c74f6ea3de349d1ea9394b4798aff3965ad37e0d6e6ebbb324970d3183f1d00",
+  "manifest_id": "mfst-cb56fcd022e94e12ac1bed5133f1095c",
+  "manifest_version": "v0",
+  "result_hash": "sha256:8ccb0016b5c450d94077a14a760543fee7b4858b5e53056f28e15b09310c4f59",
+  "snapshot_id": "syn-8e446db3bd07e724",
+  "snapshot_sha256": "8e446db3bd07e7247f8c935996dd58e77131a6d29751444fad4d0a81081900f9",
+  "spec_hash": "sha256:d50ff541e6093be70f11dfd097b642986e07c8a36e69957719598bfb5271a22b",
+  "spec_version": 1
+}

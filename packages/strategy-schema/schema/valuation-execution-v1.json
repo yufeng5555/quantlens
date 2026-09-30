@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quantlens.local/schema/valuation-execution-v1.json",
+  "title": "QuantLens valuation-ledger execution v1",
+  "type": "object",
+  "required": [
+    "execution_id",
+    "role",
+    "purpose",
+    "window",
+    "cost_multiplier",
+    "carry_in",
+    "carry_in_sha256",
+    "carry_out",
+    "carry_out_sha256",
+    "bars",
+    "fills"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "execution_id": { "type": "string", "pattern": "^exec-[0-9a-f]{64}$" },
+    "role": { "enum": ["strategy", "benchmark"] },
+    "purpose": { "enum": ["primary_evaluation", "fold_slice", "cost_stress", "final_holdout"] },
+    "window": { "$ref": "#/$defs/window" },
+    "cost_multiplier": { "type": "number", "minimum": 0 },
+    "carry_in": { "$ref": "#/$defs/carry" },
+    "carry_in_sha256": { "$ref": "#/$defs/sha256" },
+    "carry_out": { "$ref": "#/$defs/carry" },
+    "carry_out_sha256": { "$ref": "#/$defs/sha256" },
+    "bars": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/bar" }
+    },
+    "fills": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fill" }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "window": {
+      "type": "object",
+      "required": ["start_date", "end_date", "start_index", "end_index_exclusive", "observation_count"],
+      "additionalProperties": false,
+      "properties": {
+        "start_date": { "type": "string", "format": "date" },
+        "end_date": { "type": "string", "format": "date" },
+        "start_index": { "type": "integer", "minimum": 0 },
+        "end_index_exclusive": { "type": "integer", "minimum": 1 },
+        "observation_count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "carry": {
+      "type": "object",
+      "required": ["cash", "shares", "position"],
+      "additionalProperties": false,
+      "properties": {
+        "cash": { "type": "number", "minimum": 0 },
+        "shares": { "type": "number", "minimum": 0 },
+        "position": { "type": "integer", "enum": [0, 1] }
+      }
+    },
+    "bar": {
+      "type": "object",
+      "required": [
+        "date", "close", "cash", "shares", "position_value", "equity", "position",
+        "daily_commission", "daily_slippage", "cash_return"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "close": { "type": "number", "exclusiveMinimum": 0 },
+        "cash": { "type": "number", "minimum": 0 },
+        "shares": { "type": "number", "minimum": 0 },
+        "position_value": { "type": "number", "minimum": 0 },
+        "equity": { "type": "number", "exclusiveMinimum": 0 },
+        "position": { "type": "integer", "enum": [0, 1] },
+        "daily_commission": { "type": "number", "minimum": 0 },
+        "daily_slippage": { "type": "number", "minimum": 0 },
+        "cash_return": { "type": "number" }
+      }
+    },
+    "fill": {
+      "type": "object",
+      "required": [
+        "side", "shares", "reference_price", "effective_price", "executed_notional",
+        "commission", "slippage_amount", "session"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "side": { "enum": ["buy", "sell"] },
+        "shares": { "type": "number", "exclusiveMinimum": 0 },
+        "reference_price": { "type": "number", "exclusiveMinimum": 0 },
+        "effective_price": { "type": "number", "exclusiveMinimum": 0 },
+        "executed_notional": { "type": "number", "exclusiveMinimum": 0 },
+        "commission": { "type": "number", "minimum": 0 },
+        "slippage_amount": { "type": "number", "minimum": 0 },
+        "session": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}
