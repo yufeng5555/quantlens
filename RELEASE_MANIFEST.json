@@ -1,6 +1,6 @@
 {
   "format": "quantlens-public-candidate-v1",
-  "publication_status": "REVIEWED_RELEASE_SNAPSHOT",
+  "publication_status": "REVIEWED_SECURITY_UPDATE",
   "license_status": "MIT",
   "history": "fresh snapshot only",
   "runtime_registry": "unprepared original base; no local host registration",
@@ -211,11 +211,11 @@
       "bytes": 3560
     },
     "apps/web/package-lock.json": {
-      "sha256": "818905151fe4c72f18760662533313968426132325d1b8fbf3d6ef43ec8e29f2",
+      "sha256": "b849a28db35fb2131e313fe6d457456ecfa198c3515513a9c461b662095b96b9",
       "bytes": 37996
     },
     "apps/web/package.json": {
-      "sha256": "8d40e6ba3733c33b904ba4ea0252b73074cbcea6bf37f71772085f1b9332719b",
+      "sha256": "ef6c82e1347eb77dfd6e32758f8936c687571a3fa2822f0c20c240626c1a7247",
       "bytes": 815
     },
     "apps/web/proxy.ts": {
@@ -307,7 +307,7 @@
       "bytes": 17173
     },
     "docs/runtime-baseline.json": {
-      "sha256": "af5a76a71218bc61988b1d544fe4c8a93a9f99e64e44bb90156f19abd392431f",
+      "sha256": "bb8874bbe1c8d12a8a0bacdb20d1c1ac514674b4f9a4b05c6eeca4c6ff58cf4c",
       "bytes": 17730
     },
     "examples/sample-report/README.md": {
@@ -519,12 +519,12 @@
       "bytes": 244
     },
     "requirements-hashes.lock": {
-      "sha256": "5835320eb4484126279df2acfa87ec72885a74e8b1eea556da93e238d6b36354",
-      "bytes": 59421
+      "sha256": "8154287b3ebb0e5731fd84c1e11b5a406f89480681357993cb83752685de7e1a",
+      "bytes": 59422
     },
     "requirements-lock.txt": {
-      "sha256": "715e8adfd359a16507213625ab2f3bb997d2d198c8411fef2f7f100e0b0bac84",
-      "bytes": 773
+      "sha256": "442eb2a637b995120a71d5feedc8c4287d2201e5e1eaa3a521c1d20232c4f256",
+      "bytes": 774
     },
     "requirements.txt": {
       "sha256": "0241bc135f84ac632e27e386a2c9c8412f239fa656bd9c91bb5f899d7b6e6926",
