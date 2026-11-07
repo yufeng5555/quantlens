@@ -1,5 +1,28 @@
 # Reproducibility checks
 
+## Security maintenance — 2026-11-07
+
+The source repository now pins Next.js 16.4.3, source-map-js 1.2.2 and certifi
+2026.10.18. Both dependency locks, the runtime source baseline, the dependency
+license inventory and the release manifest have been updated together.
+
+In a fresh checkout of the current remote revision with the reviewed update,
+the selected suite passed all **194 tests**, the TypeScript check and the Next.js
+production build. A real loopback API/worker synthetic-v2 example passed and all
+15 exported artifacts were verified. The current npm lock audit and OSV queries
+for all 43 exact Python dependencies reported no known vulnerabilities. The
+existing Starlette TestClient deprecation warning remains. Runtime registration
+was performed only in the isolated local verification copy; the published
+registry and its integrity guards are preserved.
+
+These are source and local verification results. They do not certify the hosted
+demo's installed versions or prove that the application has never been attacked.
+Production deployment and verification are separate steps. The September
+verification record below describes the initial public snapshot and is retained
+as historical evidence.
+
+## Initial public snapshot — September 2026
+
 Verification date: 2026-09-28, Asia/Shanghai. Platform: macOS arm64; Python 3.13.9; Node 24.18.0; npm 11.16.0. No production state, provider credentials or existing production environment was used.
 
 ## Actual candidate checks
